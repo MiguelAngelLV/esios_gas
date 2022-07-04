@@ -22,6 +22,7 @@ CONF_PVPC = HA_IMPLEMENTED_IDS[0]
 CONF_INYECTION = HA_IMPLEMENTED_IDS[1]
 CONF_CO2_GEN = HA_IMPLEMENTED_IDS[2]
 CONF_CO2_FREE = HA_IMPLEMENTED_IDS[3]
+CONF_GAS = HA_IMPLEMENTED_IDS[4]
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
@@ -31,6 +32,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_INYECTION, default=False): bool,
         vol.Required(CONF_CO2_FREE, default=True): bool,
         vol.Required(CONF_CO2_GEN, default=True): bool,
+        vol.Required(CONF_GAS, default=False):bool
     }
 )
 

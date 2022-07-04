@@ -4,6 +4,11 @@ from __future__ import annotations
 from datetime import datetime
 import logging
 from typing import Any, Mapping
+from config.custom_components.esios.esios_data.const import (
+    ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE,
+    ESIOS_INDICATOR_INYECTION_PRICE,
+)
+from config.custom_components.esios.esios_data.prices import make_price_sensor_attributes
 
 from homeassistant.components.sensor import (
     STATE_CLASS_MEASUREMENT,
@@ -31,6 +36,13 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
         key="PVPC",
         icon="mdi:currency-eur",
         name="PVPC",
+        native_unit_of_measurement="€/kWh",
+        state_class=STATE_CLASS_MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="GAS_COMPENSATION",
+        icon="mdi:currency-eur",
+        name="Gas compensation price",
         native_unit_of_measurement="€/kWh",
         state_class=STATE_CLASS_MEASUREMENT,
     ),
@@ -68,6 +80,15 @@ async def async_setup_entry(
         EsiosSensor(coordinator, description)
         for description in SENSOR_TYPES
         if get_esios_id(description.key) in coordinator.api.enabled_codes
+    )
+
+
+    inyection_with_gas = SensorEntityDescription(
+        key="INYECTION_GAS",
+        icon="mdi:currency-eur",
+        name="Grid inyection Price with Gas compensation",
+        native_unit_of_measurement="€/kWh",
+        state_class=STATE_CLASS_MEASUREMENT,
     )
 
 
@@ -156,3 +177,4 @@ class EsiosSensor(CoordinatorEntity, SensorEntity):
         """Return the state attributes."""
         self._attrs = self.coordinator.api.get_attrs(self._esios_id)
         return self._attrs
+
