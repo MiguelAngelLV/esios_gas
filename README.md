@@ -5,7 +5,7 @@
 
 ## Descripción
 
-Esta es una modificación del componente publicado (https://github.com/azogue/aiopvpc/issues/9#issuecomment-968049577)[aquí] que incluye soporte tanto para el precio de los excedentes.
+Esta es una modificación del componente publicado [aquí](https://github.com/azogue/aiopvpc/issues/9#issuecomment-968049577) que incluye soporte tanto para el precio de los excedentes.
 
 Esta modificación añade además el precio de compensación del gas y un sensor adicional que suma ambos.
 
