@@ -4,14 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 import logging
 from typing import Any, Mapping
-from config.custom_components.esios.esios_data.const import (
-    ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE,
-    ESIOS_INDICATOR_INYECTION_PRICE,
-)
 
-from config.custom_components.esios.esios_data.prices import (
-    make_price_sensor_attributes,
-)
 
 from homeassistant.components.sensor import (
     STATE_CLASS_MEASUREMENT,
@@ -31,6 +24,15 @@ from . import EsiosDataUpdateCoordinator
 from .const import DOMAIN
 from .esios_data import get_esios_id, is_hourly_price
 from .esios_data.api import _ensure_utc_time
+
+from .esios_data.const import (
+    ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE,
+    ESIOS_INDICATOR_INYECTION_PRICE,
+)
+
+from .esios_data.prices import (
+    make_price_sensor_attributes,
+)
 
 _LOGGER = logging.getLogger(__name__)
 PARALLEL_UPDATES = 1
