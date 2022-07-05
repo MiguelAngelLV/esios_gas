@@ -1,5 +1,5 @@
 {
-  "domain": "esios",
+  "domain": "esios_gas",
   "name": "ESIOS API Data",
   "config_flow": true,
   "documentation": "https://github.com/MiguelAngelLV/esios_gas",
