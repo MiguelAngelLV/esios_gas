@@ -8,7 +8,10 @@ from config.custom_components.esios.esios_data.const import (
     ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE,
     ESIOS_INDICATOR_INYECTION_PRICE,
 )
-from config.custom_components.esios.esios_data.prices import make_price_sensor_attributes
+
+from config.custom_components.esios.esios_data.prices import (
+    make_price_sensor_attributes,
+)
 
 from homeassistant.components.sensor import (
     STATE_CLASS_MEASUREMENT,
@@ -27,6 +30,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import EsiosDataUpdateCoordinator
 from .const import DOMAIN
 from .esios_data import get_esios_id, is_hourly_price
+from .esios_data.api import _ensure_utc_time
 
 _LOGGER = logging.getLogger(__name__)
 PARALLEL_UPDATES = 1
@@ -49,7 +53,7 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key="INYECTION",
         icon="mdi:currency-eur",
-        name="Grid inyection Price",
+        name="Grid Injection Price",
         native_unit_of_measurement="€/kWh",
         state_class=STATE_CLASS_MEASUREMENT,
     ),
@@ -82,14 +86,19 @@ async def async_setup_entry(
         if get_esios_id(description.key) in coordinator.api.enabled_codes
     )
 
+    if (
+        ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE in coordinator.api.enabled_codes
+        and ESIOS_INDICATOR_INYECTION_PRICE in coordinator.api.enabled_codes
+    ):
+        inyection_with_gas = SensorEntityDescription(
+            key="INYECTION_GAS",
+            icon="mdi:currency-eur",
+            name="Grid Injection Price with Gas compensation",
+            native_unit_of_measurement="€/kWh",
+            state_class=STATE_CLASS_MEASUREMENT,
+        )
 
-    inyection_with_gas = SensorEntityDescription(
-        key="INYECTION_GAS",
-        icon="mdi:currency-eur",
-        name="Grid inyection Price with Gas compensation",
-        native_unit_of_measurement="€/kWh",
-        state_class=STATE_CLASS_MEASUREMENT,
-    )
+        async_add_entities([InyectionWithGas(coordinator, inyection_with_gas)])
 
 
 class EsiosSensor(CoordinatorEntity, SensorEntity):
@@ -178,3 +187,90 @@ class EsiosSensor(CoordinatorEntity, SensorEntity):
         self._attrs = self.coordinator.api.get_attrs(self._esios_id)
         return self._attrs
 
+
+class InyectionWithGas(CoordinatorEntity, SensorEntity):
+    """An entity using CoordinatorEntity.
+
+    The CoordinatorEntity class provides:
+      should_poll
+      async_update
+      async_added_to_hass
+      available
+
+    """
+
+    coordinator: EsiosDataUpdateCoordinator
+
+    def __init__(
+        self,
+        coordinator: EsiosDataUpdateCoordinator,
+        description: SensorEntityDescription,
+    ) -> None:
+        """Initialize ESIOS sensor."""
+        super().__init__(coordinator)
+        self.entity_description = description
+        self._esios_id = "inyection_with_gas"
+        self._state: StateType = None
+        self._attrs: Mapping[str, Any] = {}
+        self._attr_name = f"ESIOS Inyection with Gas Compensation"
+        self._attr_device_info = DeviceInfo(
+            configuration_url="https://api.esios.ree.es",
+            entry_type="service",
+            identifiers={(DOMAIN, coordinator.entry_id)},
+            manufacturer="REE",
+            name="API e·sios",
+        )
+        self._attr_unique_id = f"{coordinator.name}-inyection_with_gas_compensation"
+
+    async def async_added_to_hass(self) -> None:
+
+        await super().async_added_to_hass()
+
+        self.async_on_remove(
+            async_track_time_change(
+                self.hass, self.update_current_price, second=[0], minute=[0]
+            )
+        )
+
+    async def async_will_remove_from_hass(self) -> None:
+        await super().async_will_remove_from_hass()
+
+    @callback
+    def update_current_price(self, now: datetime) -> None:
+        """Update the sensor state, by selecting the current price for this hour."""
+        self.coordinator.api.state_and_attributes(
+            now, ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE
+        )
+        self.async_write_ha_state()
+
+    @property
+    def native_value(self) -> StateType:
+        """Return the state."""
+        inyection = self.coordinator.api.get_state(ESIOS_INDICATOR_INYECTION_PRICE)
+        compensation = self.coordinator.api.get_state(
+            ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE
+        )
+        self._state = inyection + compensation
+        return self._state
+
+    @property
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+        """Return the state attributes."""
+
+        gas = self.coordinator.api.get_values(ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE)
+        inyection = self.coordinator.api.get_values(ESIOS_INDICATOR_INYECTION_PRICE)
+
+        prices = {}
+        for date in gas.keys():
+            prices[date] = gas[date] + inyection[date]
+
+        now = datetime.utcnow()
+        utc_time = now.replace(microsecond=0, second=0, minute=0)
+
+        utc_time = _ensure_utc_time(utc_time.replace(minute=0, second=0, microsecond=0))
+
+        self._attrs = make_price_sensor_attributes(
+            prices, utc_time, self.coordinator.api._local_timezone
+        )
+
+        return self._attrs
