@@ -2,10 +2,10 @@
   "domain": "esios",
   "name": "ESIOS API Data",
   "config_flow": true,
-  "documentation": "https://github.com/azogue/ha-esios",
-  "issue_tracker": "https://github.com/azogue/ha-esios/issues",
+  "documentation": "https://github.com/MiguelAngelLV/esios_gas",
+  "issue_tracker": "https://github.com/MiguelAngelLV/esios_gas/issues",
   "requirements": [],
-  "codeowners": ["@azogue"],
+  "codeowners": ["@miguelangellv", "@azogue"],
   "version": "1.0.0",
   "iot_class": "cloud_polling"
 }
