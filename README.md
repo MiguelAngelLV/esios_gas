@@ -14,3 +14,11 @@ Tanto el componente original como este requiren un token de acceso a la API de E
 ## Instalación
 
 Podéis instarlo tanto descargando este proyecto y copiándolo en la carpeta custom_component como usando HACS.
+
+## Uso
+
+Después de instalarlo, tendrás que añadirlo desde el apartado de integraciones buscando ESIOS
+
+## Otros PVPC
+
+Si tienes otros sensores PVPC, se recomenda desinstalarlos antes.
