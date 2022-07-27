@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Mapping, Optional, Union, cast
 import zoneinfo
 
 import aiohttp
+from async_timeout import timeout
 
 from .const import (
     ATTRIBUTION,
@@ -122,7 +123,7 @@ class EsiosApiData:
         }
         _LOGGER.debug("Calling to '%s'", url)
         try:
-            resp = await self.session.get(url, headers=headers)
+            resp = await self.session.get(url, headers=headers, timeout=3000)
             if resp.status < 400:
                 data = await resp.json()
                 return extract_indicator_data(data)

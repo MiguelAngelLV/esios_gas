@@ -5,7 +5,6 @@ from datetime import datetime
 import logging
 from typing import Any, Mapping
 
-
 from homeassistant.components.sensor import (
     STATE_CLASS_MEASUREMENT,
     SensorEntity,
@@ -252,7 +251,12 @@ class InyectionWithGas(CoordinatorEntity, SensorEntity):
         compensation = self.coordinator.api.get_state(
             ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE
         )
-        self._state = inyection + compensation
+
+        if inyection is None or compensation is None:
+            self._state = None
+        else:
+            self._state = inyection + compensation
+
         return self._state
 
     @property
