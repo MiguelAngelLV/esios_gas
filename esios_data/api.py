@@ -119,7 +119,7 @@ class EsiosApiData:
         )
         headers = {
             **ESIOS_HEADERS,
-            "Authorization": f"Token token={self.api_token}",
+           "x-api-key": f"{self.api_token}",
         }
         _LOGGER.debug("Calling to '%s'", url)
         try:
