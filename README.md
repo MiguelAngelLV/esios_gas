@@ -22,3 +22,8 @@ Después de instalarlo, tendrás que añadirlo desde el apartado de integracione
 ## Otros PVPC
 
 Si tienes otros sensores PVPC, se recomenda desinstalarlos antes.
+
+
+## Balance Neto
+
+Si tienes instalación fotovoltaica es posible que te interese mi otro componente [Balance Neto Horario](https://github.com/MiguelAngelLV/balance_neto) para calcular de forma más precia los euros.
