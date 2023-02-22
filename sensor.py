@@ -10,6 +10,8 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,
 )
+from homeassistant.helpers.device_registry import DeviceEntryType
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE
 from homeassistant.core import HomeAssistant, callback
@@ -129,7 +131,7 @@ class EsiosSensor(CoordinatorEntity, SensorEntity):
         self._attr_name = f"ESIOS {description.name}"
         self._attr_device_info = DeviceInfo(
             configuration_url="https://api.esios.ree.es",
-            entry_type="service",
+            entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, coordinator.entry_id)},
             manufacturer="REE",
             name="API e·sios",
@@ -216,7 +218,7 @@ class InyectionWithGas(CoordinatorEntity, SensorEntity):
         self._attr_name = f"ESIOS Inyection with Gas Compensation"
         self._attr_device_info = DeviceInfo(
             configuration_url="https://api.esios.ree.es",
-            entry_type="service",
+            entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, coordinator.entry_id)},
             manufacturer="REE",
             name="API e·sios",
