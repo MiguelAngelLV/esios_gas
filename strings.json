@@ -5,7 +5,7 @@
         "data": {
           "api_token": "ESIOS API Authentication Token",
           "pvpc": "Electricity hourly price (PVPC, tarif 2.0TD)",
-          "inyection_price": "Surplus energy hourly price (electricity grid inyection)",
+          "injection_price": "Surplus energy hourly price (electricity grid injection)",
           "co2_gen": "CO2 Associated with the Real Generation of the electricity grid",
           "co2_free": "Percentage of CO2-free generation on the electricity grid"
         },
@@ -27,7 +27,7 @@
         "description": "Enable or disable the available ESIOS indicators.",
         "data": {
           "pvpc": "Electricity hourly price (PVPC, tarif 2.0TD)",
-          "inyection_price": "Surplus energy hourly price (electricity grid inyection)",
+          "injection_price": "Surplus energy hourly price (electricity grid injection)",
           "co2_gen": "CO2 Associated with the Real Generation of the electricity grid",
           "co2_free": "Percentage of CO2-free generation on the electricity grid"
         }
