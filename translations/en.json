@@ -16,7 +16,7 @@
                     "co2_gen": "CO2 Associated with the Real Generation of the electricity grid",
                     "injection_price": "Surplus energy hourly price (electricity grid injection)",
                     "pvpc": "Electricity hourly price (PVPC, tarif 2.0TD)",
-                    "gas_compensation": "Gas compensation price (Iberica Exception)"
+                    "gas_compensation": "Gas compensation price (Iberian Exception)"
                 },
                 "description": "Request a personal access token by [sending an empty email to esios](mailto:consultasios@ree.es?subject=Personal%20token%20request)"
             }
@@ -30,7 +30,7 @@
                     "co2_gen": "CO2 Associated with the Real Generation of the electricity grid",
                     "injection_price": "Surplus energy hourly price (electricity grid injection)",
                     "pvpc": "Electricity hourly price (PVPC, tarif 2.0TD)",
-                    "gas_compensation": "Gas compensation price (Iberica Exception)"
+                    "gas_compensation": "Gas compensation price (Iberian Exception)"
                 },
                 "description": "Enable or disable the available ESIOS indicators."
             }
