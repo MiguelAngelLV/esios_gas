@@ -28,7 +28,7 @@ from .esios_data.api import _ensure_utc_time
 
 from .esios_data.const import (
     ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE,
-    ESIOS_INDICATOR_INYECTION_PRICE,
+    ESIOS_INDICATOR_INJECTION_PRICE,
 )
 
 from .esios_data.prices import (
@@ -54,7 +54,7 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
         state_class=STATE_CLASS_MEASUREMENT,
     ),
     SensorEntityDescription(
-        key="INYECTION",
+        key="INJECTION",
         icon="mdi:currency-eur",
         name="Grid Injection Price",
         native_unit_of_measurement="€/kWh",
@@ -91,17 +91,17 @@ async def async_setup_entry(
 
     if (
         ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE in coordinator.api.enabled_codes
-        and ESIOS_INDICATOR_INYECTION_PRICE in coordinator.api.enabled_codes
+        and ESIOS_INDICATOR_INJECTION_PRICE in coordinator.api.enabled_codes
     ):
-        inyection_with_gas = SensorEntityDescription(
-            key="INYECTION_GAS",
+        injection_with_gas = SensorEntityDescription(
+            key="INJECTION_GAS",
             icon="mdi:currency-eur",
             name="Grid Injection Price with Gas compensation",
             native_unit_of_measurement="€/kWh",
             state_class=STATE_CLASS_MEASUREMENT,
         )
 
-        async_add_entities([InyectionWithGas(coordinator, inyection_with_gas)])
+        async_add_entities([InjectionWithGas(coordinator, injection_with_gas)])
 
 
 class EsiosSensor(CoordinatorEntity, SensorEntity):
@@ -191,7 +191,7 @@ class EsiosSensor(CoordinatorEntity, SensorEntity):
         return self._attrs
 
 
-class InyectionWithGas(CoordinatorEntity, SensorEntity):
+class InjectionWithGas(CoordinatorEntity, SensorEntity):
     """An entity using CoordinatorEntity.
 
     The CoordinatorEntity class provides:
@@ -212,10 +212,10 @@ class InyectionWithGas(CoordinatorEntity, SensorEntity):
         """Initialize ESIOS sensor."""
         super().__init__(coordinator)
         self.entity_description = description
-        self._esios_id = "inyection_with_gas"
+        self._esios_id = "injection_with_gas"
         self._state: StateType = None
         self._attrs: Mapping[str, Any] = {}
-        self._attr_name = f"ESIOS Inyection with Gas Compensation"
+        self._attr_name = f"ESIOS Injection with Gas Compensation"
         self._attr_device_info = DeviceInfo(
             configuration_url="https://api.esios.ree.es",
             entry_type=DeviceEntryType.SERVICE,
@@ -223,7 +223,7 @@ class InyectionWithGas(CoordinatorEntity, SensorEntity):
             manufacturer="REE",
             name="API e·sios",
         )
-        self._attr_unique_id = f"{coordinator.name}-inyection_with_gas_compensation"
+        self._attr_unique_id = f"{coordinator.name}-injection_with_gas_compensation"
 
     async def async_added_to_hass(self) -> None:
 
@@ -249,15 +249,15 @@ class InyectionWithGas(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self) -> StateType:
         """Return the state."""
-        inyection = self.coordinator.api.get_state(ESIOS_INDICATOR_INYECTION_PRICE)
+        injection = self.coordinator.api.get_state(ESIOS_INDICATOR_INJECTION_PRICE)
         compensation = self.coordinator.api.get_state(
             ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE
         )
 
-        if inyection is None or compensation is None:
+        if injection is None or compensation is None:
             self._state = None
         else:
-            self._state = inyection + compensation
+            self._state = injection + compensation
 
         return self._state
 
@@ -266,11 +266,11 @@ class InyectionWithGas(CoordinatorEntity, SensorEntity):
         """Return the state attributes."""
 
         gas = self.coordinator.api.get_values(ESIOS_INDICARTOR_GAS_COMPENSATION_PRICE)
-        inyection = self.coordinator.api.get_values(ESIOS_INDICATOR_INYECTION_PRICE)
+        injection = self.coordinator.api.get_values(ESIOS_INDICATOR_INJECTION_PRICE)
 
         prices = {}
         for date in gas.keys():
-            prices[date] = gas[date] + inyection[date]
+            prices[date] = gas[date] + injection[date]
 
         now = datetime.utcnow()
         utc_time = now.replace(microsecond=0, second=0, minute=0)
