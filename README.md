@@ -2,6 +2,12 @@
 # Componente PVPC para Home Assistant con soporte para Comepnsación del Gas
 
 
+## Importante, cambio en los entities
+
+Debido a unos typos, la última actualización puede obligarte a cambiar algunas configuraciones porque han cambiado algunos nombres.
+
+Realmente no hace falta actualizar ahora mismo, pero si actualizas, lo más fácil es una vez cargue la integración renombrar los ID's al que tuviese antes para no tener problemas.
+
 
 ## Descripción
 
