@@ -1,4 +1,13 @@
 
+# Proyecto abandonado
+
+Desde hace varios meses no utilizo PVPC y [Eugenio Panadero](https://github.com/azogue/) creador del componente original incluido en HA dispone
+también tambien de una versión adicional las mismas opciones que añadí en este componente, por lo que no tiene sentido mantener ambos proyectos.
+
+Os recomiendo que uséis el suyo ( https://github.com/azogue/ha-pvpc-custom )
+
+
+
 # Componente PVPC para Home Assistant con soporte para Comepnsación del Gas
 
 
